@@ -27,7 +27,18 @@ await Promise.all([redisClient.connect(), pubClient.connect(), subClient.connect
 import admin from 'firebase-admin';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const serviceAccount = require('./jwmultiplayer-firebase-adminsdk-2952g-1bfce059ed.json');
+
+// Railway: decode from env variable
+let serviceAccount;
+if (process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64) {
+  serviceAccount = JSON.parse(
+    Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64, 'base64').toString('utf-8')
+  );
+} else {
+  // fallback for local dev
+  serviceAccount = require('./jwmultiplayer-firebase-adminsdk-2952g-1bfce059ed.json');
+}
+// const serviceAccount = require('./jwmultiplayer-firebase-adminsdk-2952g-1bfce059ed.json');
 
 
 // Initialize Firebase Admin
